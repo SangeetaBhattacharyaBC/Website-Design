@@ -1,0 +1,104 @@
+<!DOCTYPE html> <!-- Defines the document type as HTML5 -->
+
+<html>
+
+<head>
+    <title>HTML Table Example</title> <!-- Title shown in the browser tab -->
+
+    <style>
+
+        /* Wrapping text around the table */
+        .wrapped-table {
+            float: right; /* Moves the table to the right side so text flows around it */
+            margin: 15px; /* Adds space around the table */
+        }
+
+        table {
+            border: 2px solid black;       /* 1. Adds a border to the table */
+            width: 60%;                   /* 2. Sets the table width */
+            text-align: center;           /* 6. Aligns text inside cells to the center */
+            border-spacing: 10px;         /* 7. Controls spacing between cells */
+        }
+
+        th, td {
+            border: 1px solid black;      /* Adds border around table cells */
+            padding: 10px;                /* 5. Adds space inside each cell */
+        }
+
+        .colored-cell {
+            background-color: lightblue;  /* 9. Changes a cell’s background color */
+        }
+
+        /* Centering the table horizontally */
+        .centered {
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <h2>HTML Table Demonstration</h2> <!-- Heading for the page -->
+
+    <p>
+        <!-- Normal paragraph text -->
+        This paragraph text will wrap around the table because the table is floated to the right. 
+        You can add more and more text here to see how the wrapping works in real-time. 
+        The table on the right has borders, adjusted width, spacing, and even a nested table example.
+    </p>
+
+    <!-- Main Table Starts -->
+    <table class="wrapped-table centered"> <!-- Table with styling classes -->
+
+        <tr> <!-- Table Row -->
+            <th>Name</th>       <!-- Table Header Cell (bold, centered by default) -->
+            <th>Subject</th>
+            <th>Marks</th>
+        </tr>
+
+        <tr> <!-- Second Row -->
+            <td>John</td>       <!-- Table Data Cell -->
+            <td>Math</td>
+            <td class="colored-cell">85</td> <!-- Data Cell with background color -->
+        </tr>
+
+        <tr> <!-- Third Row -->
+            <td>Alice</td>
+            <td>Science</td>
+            <td>90</td>
+        </tr>
+
+        <tr> <!-- Fourth Row -->
+
+            <!-- colspan merges 3 columns into one large cell -->
+
+            <td colspan="3">
+
+                <!-- 8. Nested Table starts inside a cell -->
+                <table border="1" width="100%">
+
+                    <tr>
+                        <th>Nested Header 1</th>
+                        <th>Nested Header 2</th>
+                    </tr>
+
+                    <tr>
+                        <td>Data A</td>
+                        <td>Data B</td>
+                    </tr>
+
+                </table>
+                <!-- Nested Table ends -->
+
+            </td>
+
+        </tr>
+
+    </table>
+    <!-- Main Table Ends -->
+
+</body>
+
+</html>
