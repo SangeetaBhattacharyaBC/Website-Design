@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Order Form</title>
+</head>
+
+<body>
+    <h2>Order Your Shirt</h2>
+
+    <form action="#" method="post">
+        <!-- Text Boxes -->
+
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname"><br><br>
+
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname"><br><br>
+
+        <!-- Drop-down Menu -->
+        <label for="shirt">Type of Shirt:</label>
+        <select id="shirt" name="shirt">
+            <option value="sleeveless">Sleeveless</option>
+            <option value="fullsleeve">Full Sleeve</option>
+            <option value="tshirt">T-Shirt</option>
+            <option value="polo">Polo</option>
+        </select><br><br>
+
+        <!-- Radio Buttons -->
+        <label>Size:</label>
+        <input type="radio" id="large" name="size" value="large">
+        <label for="large">Large</label>
+
+        <input type="radio" id="medium" name="size" value="medium" checked>
+        <label for="medium">Medium</label>
+
+        <input type="radio" id="small" name="size" value="small">
+        <label for="small">Small</label><br><br>
+
+        <!-- Checkboxes -->
+        <label>Color:</label>
+        <input type="checkbox" id="red" name="color" value="red">
+        <label for="red">Red</label>
+
+        <input type="checkbox" id="navy" name="color" value="navy" checked>
+        <label for="navy">Navy</label>
+
+        <input type="checkbox" id="black" name="color" value="black">
+        <label for="black">Black</label><br><br>
+
+        <!-- Text Area -->
+        <label for="comments">Comments?</label><br>
+        <textarea id="comments" name="comments" rows="5" cols="40"></textarea><br><br>
+
+        <!-- Buttons -->
+        <input type="submit" value="Buy Now!">
+        <input type="reset" value="Reset">
+    </form>
+
+</body>
+
+</html>
