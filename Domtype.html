@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Node Types Explorer</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .node-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .node-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .node-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .element-node { 
+            border-left-color: #1e40af; 
+            background: #dbeafe;
+        }
+        .text-node { 
+            border-left-color: #166534; 
+            background: #dcfce7;
+        }
+        .comment-node { 
+            border-left-color: #c2410c; 
+            background: #fed7aa;
+        }
+        .document-node { 
+            border-left-color: #7c2d12; 
+            background: #fef3c7;
+        }
+        .attribute-node { 
+            border-left-color: #dc2626; 
+            background: #fee2e2;
+        }
+
+        .node-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .node-icon {
+            font-size: 1.5rem;
+        }
+
+        .node-description {
+            color: #4a5568;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: #ffd700;
+            color: #2d3748;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .interactive-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .tab-button {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+
+        .tab-button:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .tab-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .quiz-section {
+            background: #f0fdf4;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 0;
+            border: 2px solid #166534;
+        }
+
+        .quiz-progress {
+            text-align: center;
+            font-size: 1rem;
+            color: #166534;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .quiz-score {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #166534;
+            margin-top: 15px;
+        }
+
+        .quiz-question {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+            white-space: pre-line;
+            font-family: 'Courier New', monospace;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #166534;
+            background: #f0fdf4;
+        }
+
+        .quiz-option:focus {
+            outline: 3px solid #86efac;
+            outline-offset: 2px;
+        }
+
+        .quiz-option.correct {
+            background: #dcfce7;
+            border-color: #166534;
+        }
+
+        .quiz-option.incorrect {
+            background: #fee2e2;
+            border-color: #dc2626;
+        }
+
+        .quiz-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+
+
+        .more-examples {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .node-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌳 DOM Node Types Explorer</h1>
+            <p>Learn about the different types of nodes in the Document Object Model with interactive examples</p>
+        </div>
+
+        <div class="node-types">
+            <div class="node-card element-node" onclick="showNodeInfo('element')">
+                <div class="node-title">
+                    <span class="node-icon">🏷️</span>
+                    Element Nodes
+                </div>
+                <div class="node-description">
+                    HTML tags like &lt;div&gt;, &lt;p&gt;, &lt;img&gt;. These are the building blocks of web pages.
+                </div>
+                <div class="code-example">
+<strong>Example 1: Basic Container <br> </strong>
+&lt;div id="container" class="main-content"&gt; <br> 
+  &lt;p class="text"&gt;Hello World&lt;/p&gt; <br> 
+  &lt;img src="image.jpg" alt="Photo"&gt;<br> 
+&lt;/div&gt; 
+
+<br>
+<br>
+
+<strong>Example 2: Form Elements <br> </strong>
+&lt;form id="userForm" method="post"&gt;<br> 
+  &lt;input type="text" name="username" 
+         placeholder="Enter name"&gt;<br> 
+  &lt;button type="submit" class="btn-primary"&gt; 
+    Submit
+  &lt;/button&gt;<br> 
+&lt;/form&gt;
+
+<br>
+<br>
+
+<strong>Example 3: Navigation Structure <br> </strong>
+&lt;nav class="main-nav"&gt; <br> 
+  &lt;ul class="nav-list"&gt;<br> 
+    &lt;li&gt; 
+      &lt;a href="#home"&gt;Home&lt;/a&gt;<br> 
+    &lt;/li&gt;<br> 
+    &lt;li&gt;
+      &lt;a href="#about"&gt;About&lt;/a&gt;
+    &lt;/li&gt;<br> 
+  &lt;/ul&gt;
+&lt;/nav&gt;
+                </div>
+
+                <div class="more-examples">
+                    <strong>More Examples:</strong><br>
+                    • &lt;button&gt;, &lt;input&gt;, &lt;form&gt;<br>
+                    • &lt;ul&gt;, &lt;li&gt;, &lt;table&gt;<br>
+                    • &lt;header&gt;, &lt;main&gt;, &lt;footer&gt;
+                </div>
+            </div>
+
+            <div class="node-card text-node" onclick="showNodeInfo('text')">
+                <div class="node-title">
+                    <span class="node-icon">📝</span>
+                    Text Nodes
+                </div>
+                <div class="node-description">
+                    The actual text content inside HTML elements. Pure text without any tags.
+                </div>
+                <div class="code-example">
+<strong>Example 1: Paragraph Text <br> </strong>
+&lt;p&gt;
+  <span class="highlight">Welcome to our website! This entire sentence is one text node.</span>
+&lt;/p&gt;
+
+<br>
+<br>
+
+<strong>Example 2: Heading Text <br> </strong>
+&lt;h1&gt;
+  <span class="highlight">Main Page Title</span>
+&lt;/h1&gt;<br> 
+&lt;h2&gt;
+  <span class="highlight">Subtitle Goes Here</span>
+&lt;/h2&gt;
+
+<br>
+<br>
+
+<strong>Example 3: Mixed Content <br> </strong>
+&lt;div&gt;<br> 
+  <span class="highlight">This is the first text node</span>
+  &lt;span&gt; 
+    <span class="highlight">Text inside a span element</span>
+  &lt;/span&gt;<br> 
+  <span class="highlight">This is another separate text node</span>
+&lt;/div&gt;
+                </div>
+
+                <div class="more-examples">
+                    <strong>Text Node Facts:</strong><br>
+                    • Cannot have child nodes<br>
+                    • Always inside element nodes<br>
+                    • Can be modified with .textContent
+                </div>
+            </div>
+
+            <div class="node-card comment-node" onclick="showNodeInfo('comment')">
+                <div class="node-title">
+                    <span class="node-icon">💬</span>
+                    Comment Nodes
+                </div>
+                <div class="node-description">
+                    Comments in HTML code that don't appear on the webpage but exist in the DOM.
+                </div>
+                <div class="code-example">
+<strong>Example 1: Documentation Comments <br> </strong>
+&lt;!-- <span class="highlight">Header section starts here</span> --&gt;<br> 
+&lt;header&gt;
+  &lt;h1&gt;My Website&lt;/h1&gt;
+&lt;/header&gt;<br> 
+&lt;!-- <span class="highlight">Header section ends</span> --&gt;
+
+<br>
+<br>
+
+<strong>Example 2: Temporary Code Removal <br> </strong>
+&lt;div class="content"&gt; <br> 
+  &lt;p&gt;This paragraph is visible&lt;/p&gt;<br> 
+  &lt;!-- 
+    <span class="highlight">&lt;p&gt;This paragraph is commented out&lt;/p&gt;</span> 
+  --&gt;<br> 
+&lt;/div&gt;
+
+<br>
+<br>
+
+<strong>Example 3: Developer Notes</strong>
+&lt;!-- <span class="highlight">TODO: Add user authentication here</span> --&gt; <br> 
+&lt;!-- <span class="highlight">FIXME: This button needs better styling</span> --&gt;<br> 
+&lt;button&gt;Click me&lt;/button&gt;<br> 
+
+                </div>
+
+                <div class="more-examples">
+                    <strong>Comment Uses:</strong><br>
+                    • Code documentation<br>
+                    • Temporary code removal<br>
+                    • Developer notes
+                </div>
+            </div>
+
+            <div class="node-card document-node" onclick="showNodeInfo('document')">
+                <div class="node-title">
+                    <span class="node-icon">📄</span>
+                    Document Node
+                </div>
+                <div class="node-description">
+                    The root of the entire DOM tree. Represents the whole HTML document.
+                </div>
+                <div class="code-example">
+<strong>Example 1: Finding Elements <br> </strong>
+// Get element by ID <br> 
+let header = document.getElementById('main-header'); <br> 
+
+// Get element by class name <br> 
+let buttons = document.getElementsByClassName('btn');<br> 
+
+// Get first element matching CSS selector <br> 
+let firstParagraph = document.querySelector('p');
+
+<br>
+<br>
+
+<strong>Example 2: Creating Elements <br> </strong>
+// Create new elements <br> 
+let newDiv = document.createElement('div'); <br> 
+let newParagraph = document.createElement('p'); <br> 
+let newImage = document.createElement('img'); <br> 
+
+// Set properties and append to document <br> 
+newDiv.textContent = 'Hello World'; <br> 
+document.body.appendChild(newDiv);
+
+<br>
+<br>
+
+<strong>Example 3: Document Properties <br> </strong>
+// Access document properties <br> 
+console.log(document.title);        // Page title <br> 
+console.log(document.URL);          // Current URL <br> 
+console.log(document.doctype);      // Document type <br> 
+console.log(document.documentElement); // HTML element
+                </div>
+
+                <div class="more-examples">
+                    <strong>Document Methods:</strong><br>
+                    • createElement(), appendChild()<br>
+                    • querySelector(), getElementById()<br>
+                    • addEventListener()
+                </div>
+            </div>
+
+            <div class="node-card attribute-node" onclick="showNodeInfo('attribute')">
+                <div class="node-title">
+                    <span class="node-icon">🏷️</span>
+                    Attribute Nodes
+                </div>
+                <div class="node-description">
+                    Properties of HTML elements like id, class, src, href, etc.
+                </div>
+                <div class="code-example">
+<strong>Example 1: Image Attributes <br> </strong>
+&lt;img <span class="highlight">src="photo.jpg"</span> 
+     <span class="highlight">alt="Beautiful sunset over mountains"</span>
+     <span class="highlight">width="300"</span> 
+     <span class="highlight">height="200"</span>
+     <span class="highlight">loading="lazy"</span>&gt;
+
+<br>
+<br>
+
+<strong>Example 2: Form Input Attributes <br> </strong>
+&lt;input <span class="highlight">type="email"</span> 
+       <span class="highlight">id="user-email"</span>
+       <span class="highlight">name="email"</span>
+       <span class="highlight">placeholder="Enter your email"</span>
+       <span class="highlight">required</span>
+       <span class="highlight">maxlength="50"</span>&gt;
+
+<br>
+<br>
+
+<strong>Example 3: Link and Data Attributes <br> </strong>
+&lt;a <span class="highlight">href="https://example.com"</span>
+   <span class="highlight">target="_blank"</span>
+   <span class="highlight">rel="noopener"</span>
+   <span class="highlight">data-analytics="external-link"</span>
+   <span class="highlight">aria-label="Visit external website"</span>&gt;
+  Visit Site
+&lt;/a&gt;
+                </div>
+
+                <div class="more-examples">
+                    <strong>Common Attributes:</strong><br>
+                    • id, class, style<br>
+                    • src, href, alt<br>
+                    • data-*, aria-*
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('learn')">📚 Learn</button>
+            <button class="tab-button" onclick="showTab('quiz')">🧠 Quick Quiz</button>
+        </div>
+
+        <!-- Learn Tab Content -->
+        <div id="learn-tab" class="tab-content active">
+            <!-- Node types content is already above -->
+        </div>
+
+        <!-- Quiz Tab Content -->
+        <div id="quiz-tab" class="tab-content">
+            <div class="quiz-section">
+                <div class="interactive-title">🧠 DOM Node Types Quiz</div>
+                <div class="quiz-progress">
+                    <span id="questionNumber">Question 1</span> of 10
+                </div>
+                <div class="quiz-question" id="quizQuestion">
+                    Loading question...
+                </div>
+                <div class="quiz-options" id="quizOptions">
+                    <div class="quiz-option" onclick="selectAnswer(this, 0)">Option 1</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, 1)">Option 2</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, 2)">Option 3</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, 3)">Option 4</div>
+                </div>
+                <div class="quiz-result" id="quizResult"></div>
+                <button id="nextButton" onclick="nextQuestion()" style="display: none; margin: 15px auto; padding: 12px 24px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600;">Next Question →</button>
+                <div class="quiz-score" id="quizScore">Score: 0/0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let nodeCounter = 0;
+        let currentQuiz = 0;
+        let score = 0;
+        let totalQuestions = 10;
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Initialize quiz if quiz tab is selected
+            if (tabName === 'quiz') {
+                resetQuiz();
+            }
+        }
+
+        function resetQuiz() {
+            currentQuiz = 0;
+            score = 0;
+            loadNextQuiz();
+            updateScore();
+        }
+
+        const quizData = [
+            {
+                question: "What will this code output? \n\nlet div = document.createElement('div');\ndiv.textContent = 'Hello';\nconsole.log(div.nodeType);",
+                options: ["1 (Element Node)", "3 (Text Node)", "8 (Comment Node)", "9 (Document Node)"],
+                correct: 0
+            },
+            {
+                question: "How many text nodes are in this HTML structure?\n\n<p>Start <!-- comment --> Middle <span>End</span></p>",
+                options: ["1 text node", "2 text nodes", "3 text nodes", "4 text nodes"],
+                correct: 2
+            },
+            {
+                question: "What does this code return?\n\ndocument.querySelector('p').firstChild.nodeType\n\nGiven: <p>Hello World</p>",
+                options: ["1 (Element)", "3 (Text)", "8 (Comment)", "undefined"],
+                correct: 1
+            },
+            {
+                question: "Which method correctly adds a new paragraph to the body?",
+                options: ["document.body.innerHTML += '<p>Text</p>'", "document.body.appendChild(document.createElement('p'))", "document.body.insertHTML('<p>Text</p>')", "document.body.addElement('p')"],
+                correct: 1
+            },
+            {
+                question: "Count the total nodes in this structure:\n\n<ul>\n  <li>Item 1</li>\n  <!-- List item -->\n  <li>Item 2</li>\n</ul>",
+                options: ["5 nodes", "7 nodes", "8 nodes", "9 nodes"],
+                correct: 3
+            },
+            {
+                question: "What's the correct way to change text content safely?",
+                options: ["element.innerHTML = 'New text'", "element.textContent = 'New text'", "element.nodeValue = 'New text'", "element.text = 'New text'"],
+                correct: 1
+            },
+            {
+                question: "What will this code log?\n\nlet comment = document.createComment('Test');\nconsole.log(comment.nodeType);",
+                options: ["1", "3", "8", "9"],
+                correct: 2
+            },
+            {
+                question: "How do you access the second child element (skip text nodes)?\n\n<div>\n  Text\n  <span>First</span>\n  More text\n  <span>Second</span>\n</div>",
+                options: ["div.children[1]", "div.childNodes[3]", "div.secondChild", "div.querySelector('span:nth-child(2)')"],
+                correct: 0
+            },
+            {
+                question: "What's the difference between childNodes and children?",
+                options: ["No difference", "childNodes includes text/comment nodes, children only elements", "children includes text nodes, childNodes only elements", "childNodes is faster than children"],
+                correct: 1
+            },
+            {
+                question: "Which creates a text node containing 'Hello'?",
+                options: ["document.createElement('Hello')", "document.createTextNode('Hello')", "document.newText('Hello')", "document.textNode('Hello')"],
+                correct: 1
+            }
+        ];
+
+        function showNodeInfo(nodeType) {
+            const info = document.getElementById('nodeInfo');
+            const descriptions = {
+                element: "Element nodes are HTML tags that structure your webpage. They can contain other nodes and have attributes. Examples: &lt;div&gt;, &lt;p&gt;, &lt;img&gt;, &lt;button&gt;",
+                text: "Text nodes contain the actual readable content. They're always inside element nodes and cannot have children. They represent pure text without any HTML formatting.",
+                comment: "Comment nodes are notes in your HTML code. They don't appear on the webpage but remain in the DOM structure. Useful for documentation and debugging.",
+                document: "The document node is the root of everything. It represents the entire HTML document and provides methods to access and manipulate all other nodes.",
+                attribute: "Attribute nodes are properties of elements that provide additional information. They include things like id, class, src, href, and custom data attributes."
+            };
+            
+            info.innerHTML = `<strong>${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)} Node Details:</strong><br>${descriptions[nodeType]}`;
+            info.style.display = 'block';
+        }
+
+
+
+        function selectAnswer(option, selectedIndex) {
+            const options = document.querySelectorAll('.quiz-option');
+            const result = document.getElementById('quizResult');
+            const nextButton = document.getElementById('nextButton');
+            const isCorrect = selectedIndex === quizData[currentQuiz].correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            options.forEach((opt, index) => {
+                opt.style.pointerEvents = 'none';
+                if (opt === option) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (index === quizData[currentQuiz].correct) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            result.innerHTML = isCorrect ? 
+                '<div style="background: #c6f6d5; color: #22543d;">🎉 Correct! Great job understanding DOM nodes!</div>' :
+                '<div style="background: #fed7d7; color: #742a2a;">❌ Not quite right. The correct answer is highlighted above.</div>';
+            result.style.display = 'block';
+            
+            updateScore();
+            
+            // Show next button
+            if (currentQuiz < totalQuestions - 1) {
+                nextButton.textContent = 'Next Question →';
+                nextButton.style.display = 'block';
+            } else {
+                nextButton.textContent = 'Show Final Score';
+                nextButton.style.display = 'block';
+            }
+        }
+
+        function nextQuestion() {
+            const nextButton = document.getElementById('nextButton');
+            nextButton.style.display = 'none';
+            
+            currentQuiz++;
+            if (currentQuiz < totalQuestions) {
+                loadNextQuiz();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function loadNextQuiz() {
+            const quiz = quizData[currentQuiz];
+            document.getElementById('quizQuestion').textContent = quiz.question;
+            document.getElementById('questionNumber').textContent = `Question ${currentQuiz + 1}`;
+            
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((option, index) => {
+                option.textContent = quiz.options[index];
+                option.className = 'quiz-option';
+                option.style.pointerEvents = 'auto';
+            });
+            
+            document.getElementById('quizResult').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('quizScore').textContent = `Score: ${score}/${Math.min(currentQuiz + 1, totalQuestions)}`;
+        }
+
+        function showFinalScore() {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let message = '';
+            
+            if (percentage >= 90) {
+                message = '🏆 Excellent! You\'re a DOM expert!';
+            } else if (percentage >= 70) {
+                message = '👍 Great job! You understand DOM nodes well!';
+            } else if (percentage >= 50) {
+                message = '📚 Good effort! Review the examples to improve.';
+            } else {
+                message = '💪 Keep learning! Practice with the examples above.';
+            }
+            
+            document.getElementById('quizResult').innerHTML = 
+                `<div style="background: #dbeafe; color: #1e40af; text-align: center; font-size: 1.2rem;">
+                    ${message}<br>
+                    Final Score: ${score}/${totalQuestions} (${percentage}%)<br>
+                    <button onclick="resetQuiz()" style="margin-top: 10px; padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
+                </div>`;
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Quiz will be initialized when tab is clicked
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98a4e6a7834cb376',t:'MTc1OTc1MTAwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
