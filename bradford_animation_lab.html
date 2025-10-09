@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bradford College - JavaScript Animation Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #projector {
+      position: absolute;
+      top: 100px;
+      left: 0px;
+      width: 100px;
+    }
+    #controls {
+      margin-top: 200px;
+    }
+  </style>
+  <script>
+    // Initialize position and interval ID
+    let position = 0;
+    let animationId = null;
+
+    // Function to start animation
+    function startAnimation() {
+      // Prevent multiple intervals
+      if (animationId !== null) return;
+
+      animationId = setInterval(function() {
+        position += 5;
+        document.getElementById("projector").style.left = position + "px";
+
+        // Stop animation after reaching 500px
+        if (position >= 500) {
+          clearInterval(animationId);
+          animationId = null;
+        }
+      }, 50);
+    }
+
+    // Function to stop animation
+    function stopAnimation() {
+      if (animationId !== null) {
+        clearInterval(animationId);
+        animationId = null;
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Bradford College Web Development Lab</h1>
+  <h2>JavaScript Animation: Moving Classroom Equipment</h2>
+
+  <!-- Educational Comment: This image represents a classroom projector -->
+  <img id="projector" src="image.png" alt="Projector Image">
+
+  <div id="controls">
+    <!-- Educational Comment: Start and Stop buttons control the animation -->
+    <button onclick="startAnimation()">Start Animation</button>
+    <button onclick="stopAnimation()">Stop Animation</button>
+  </div>
+
+  <p><strong>Learning Objective:</strong> Use <code>setInterval</code> and <code>style.left</code> to animate DOM elements.</p>
+  <p><strong>Tip:</strong> Try modifying <code>style.top</code> to move the image vertically.</p>
+</body>
+</html>
