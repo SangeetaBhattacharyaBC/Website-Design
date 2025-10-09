@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive DOM Manipulation Lab</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #output { border: 1px solid #ccc; padding: 10px; min-height: 100px; margin-top: 10px; }
+        button { margin: 5px; }
+        input, select { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Interactive DOM Manipulation Lab</h1>
+    <p>Use the buttons below to practice adding and removing HTML elements using JavaScript DOM methods.</p>
+
+    <div>
+        <input type="text" id="elementText" placeholder="Element text">
+        <select id="elementType">
+            <option value="p">Paragraph</option>
+            <option value="div">Div</option>
+            <option value="span">Span</option>
+        </select>
+        <button onclick="createAndAppend()">Create & Append</button>
+        <button onclick="insertBefore()">Insert Before First</button>
+        <button onclick="replaceFirst()">Replace First</button>
+        <button onclick="removeFirst()">Remove First</button>
+        <button onclick="writeDocument()">document.write()</button>
+    </div>
+
+    <div id="output">
+        <p>This is the initial content.</p>
+    </div>
+
+    <script>
+        const output = document.getElementById("output");
+
+        function createAndAppend() {
+            const type = document.getElementById("elementType").value;
+            const text = document.getElementById("elementText").value;
+            const newElem = document.createElement(type);
+            newElem.textContent = text || "New Element";
+            output.appendChild(newElem);
+        }
+
+        function insertBefore() {
+            const type = document.getElementById("elementType").value;
+            const text = document.getElementById("elementText").value;
+            const newElem = document.createElement(type);
+            newElem.textContent = text || "Inserted Element";
+            const firstChild = output.firstElementChild;
+            output.insertBefore(newElem, firstChild);
+        }
+
+        function replaceFirst() {
+            const type = document.getElementById("elementType").value;
+            const text = document.getElementById("elementText").value;
+            const newElem = document.createElement(type);
+            newElem.textContent = text || "Replacement Element";
+            const firstChild = output.firstElementChild;
+            if (firstChild) {
+                output.replaceChild(newElem, firstChild);
+            }
+        }
+
+        function removeFirst() {
+            const firstChild = output.firstElementChild;
+            if (firstChild) {
+                output.removeChild(firstChild);
+            }
+        }
+
+        function writeDocument() {
+            document.write("<h2>This page was overwritten using document.write()</h2>");
+        }
+    </script>
+</body>
+</html>
