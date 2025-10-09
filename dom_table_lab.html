@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DOM Table Manipulation Lab</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+    button { margin: 5px; }
+    #feedback { margin-top: 10px; font-weight: bold; color: green; }
+  </style>
+</head>
+<body>
+
+<h2>🧪 DOM Table Manipulation Lab</h2>
+
+<table id="myTable">
+  <tr>
+    <td>Row 0, Cell 0</td>
+    <td>Row 0, Cell 1</td>
+  </tr>
+</table>
+
+<br>
+
+<!-- Buttons for table manipulation -->
+<button onclick="createCaption()">Create Caption</button>
+<button onclick="deleteCaption()">Delete Caption</button>
+<button onclick="insertRow()">Insert Row</button>
+<button onclick="deleteRow()">Delete Last Row</button>
+<button onclick="insertCell()">Insert Cell in Row 0</button>
+<button onclick="createTHead()">Create THead</button>
+<button onclick="deleteTHead()">Delete THead</button>
+<button onclick="createTFoot()">Create TFoot</button>
+<button onclick="deleteTFoot()">Delete TFoot</button>
+
+<p id="feedback"></p>
+
+<script>
+  const table = document.getElementById("myTable");
+  const feedback = document.getElementById("feedback");
+
+  function createCaption() {
+    if (!table.caption) {
+      table.createCaption().innerText = "📋 Table Caption";
+      feedback.innerText = "✅ Caption created.";
+    } else {
+      feedback.innerText = "⚠️ Caption already exists.";
+    }
+  }
+
+  function deleteCaption() {
+    if (table.caption) {
+      table.deleteCaption();
+      feedback.innerText = "✅ Caption deleted.";
+    } else {
+      feedback.innerText = "⚠️ No caption to delete.";
+    }
+  }
+
+  function insertRow() {
+    const row = table.insertRow();
+    const cell1 = row.insertCell();
+    const cell2 = row.insertCell();
+    cell1.innerText = "New Cell 1";
+    cell2.innerText = "New Cell 2";
+    feedback.innerText = "✅ New row inserted.";
+  }
+
+  function deleteRow() {
+    if (table.rows.length > 0) {
+      table.deleteRow(table.rows.length - 1);
+      feedback.innerText = "✅ Last row deleted.";
+    } else {
+      feedback.innerText = "⚠️ No rows to delete.";
+    }
+  }
+
+  function insertCell() {
+    if (table.rows.length > 0) {
+      const row = table.rows[0];
+      row.insertCell().innerText = "New Cell";
+      feedback.innerText = "✅ New cell inserted in Row 0.";
+    } else {
+      feedback.innerText = "⚠️ No rows available.";
+    }
+  }
+
+  function createTHead() {
+    if (!table.tHead) {
+      const thead = table.createTHead();
+      const row = thead.insertRow();
+      const cell = row.insertCell();
+      cell.innerText = "Table Header";
+      feedback.innerText = "✅ THead created.";
+    } else {
+      feedback.innerText = "⚠️ THead already exists.";
+    }
+  }
+
+  function deleteTHead() {
+    if (table.tHead) {
+      table.deleteTHead();
+      feedback.innerText = "✅ THead deleted.";
+    } else {
+      feedback.innerText = "⚠️ No THead to delete.";
+    }
+  }
+
+  function createTFoot() {
+    if (!table.tFoot) {
+      const tfoot = table.createTFoot();
+      const row = tfoot.insertRow();
+      const cell = row.insertCell();
+      cell.innerText = "Table Footer";
+      feedback.innerText = "✅ TFoot created.";
+    } else {
+      feedback.innerText = "⚠️ TFoot already exists.";
+    }
+  }
+
+  function deleteTFoot() {
+    if (table.tFoot) {
+      table.deleteTFoot();
+      feedback.innerText = "✅ TFoot deleted.";
+    } else {
+      feedback.innerText = "⚠️ No TFoot to delete.";
+    }
+  }
+</script>
+
+</body>
+</html>
