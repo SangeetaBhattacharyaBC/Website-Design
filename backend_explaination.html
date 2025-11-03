@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flask Backend Tutorial</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s ease;
+        }
+
+        .section-header:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .section.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section.expanded .section-content {
+            max-height: 2000px;
+        }
+
+        .content-inner {
+            padding: 2rem;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'Python';
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            background: #4f46e5;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .explanation {
+            background: #f7fafc;
+            border-left: 4px solid #4f46e5;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .explanation h4 {
+            margin: 0 0 1rem 0;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+
+        .explanation ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .explanation li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .route-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .route-badge.post {
+            background: #f59e0b;
+        }
+
+        .visual-example {
+            background: #f0f9ff;
+            border: 2px dashed #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .flow-step {
+            background: #4f46e5;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #6b7280;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 6px;
+            border-radius: 3px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .flow-diagram {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header">
+    <h1 class="main-title" id="tutorial-title">Flask Backend Tutorial</h1>
+    <p class="step-title" id="step-title">⚙️ Step 4: Build the Backend (app.py)</p>
+    <div class="progress-bar">
+     <div class="progress-fill" id="progress-fill"></div>
+    </div>
+   </div>
+   <div class="section" id="imports-section">
+    <div class="section-header" onclick="toggleSection('imports-section')">
+     <h3 class="section-title">📚 Imports &amp; Dependencies</h3><span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-content">
+     <div class="content-inner">
+      <div class="code-block">
+       from flask import Flask, jsonify, request, send_from_directory <br>
+       from flask_cors import CORS import json, os <br>
+       from datetime import datetime
+      </div>
+      <div class="explanation">
+       <h4>What each import does:</h4>
+       <ul>
+        <li><span class="highlight">Flask</span>: Main class that creates the backend web app</li>
+        <li><span class="highlight">jsonify</span>: Converts Python objects → JSON responses for the frontend</li>
+        <li><span class="highlight">request</span>: Used to receive data sent from the frontend (POST requests)</li>
+        <li><span class="highlight">send_from_directory</span>: Sends files (like index.html) from the static folder</li>
+        <li><span class="highlight">CORS</span>: Allows frontend JS to communicate with backend</li>
+        <li><span class="highlight">json, os, datetime</span>: Standard Python libraries for data storage, file paths, and timestamps</li>
+       </ul>
+      </div>
+      <div class="visual-example">
+       <div class="flow-diagram">
+        <div class="flow-step">
+         Frontend JS
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         CORS
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         Flask Backend
+        </div>
+       </div>
+       <p><strong>CORS enables communication between frontend and backend</strong></p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section" id="initialization-section">
+    <div class="section-header" onclick="toggleSection('initialization-section')">
+     <h3 class="section-title">🔧 App Initialization</h3><span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-content">
+     <div class="content-inner">
+      <div class="code-block">
+       app = Flask(__name__, static_folder='static') <br>
+       CORS(app) <br> 
+       DATA_FILE = os.path.join('data', 'entries.json')
+      </div>
+      <div class="explanation">
+       <h4>Setup breakdown:</h4>
+       <ul>
+        <li><span class="highlight">static_folder='static'</span>: Tells Flask where to find frontend files</li>
+        <li><span class="highlight">CORS(app)</span>: Enables cross-origin requests</li>
+        <li><span class="highlight">DATA_FILE</span>: Full path to the JSON data file for storing guestbook entries</li>
+       </ul>
+      </div>
+      <div class="visual-example">
+       <p><strong>File Structure:</strong></p>
+       <div style="text-align: left; display: inline-block;">
+        📁 project/<br>
+         ├── 📄 app.py<br>
+         ├── 📁 static/<br>
+         │ └── 📄 index.html<br>
+         └── 📁 data/<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;└── 📄 entries.json
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section" id="helpers-section">
+    <div class="section-header" onclick="toggleSection('helpers-section')">
+     <h3 class="section-title">🧠 Helper Functions</h3><span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-content">
+     <div class="content-inner">
+      <h4>Reading Entries:</h4>
+      <div class="code-block">
+       def read_entries(): <br>
+       &nbsp;&nbsp; if not os.path.exists(DATA_FILE): <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return [] <br>
+       &nbsp;&nbsp;with open(DATA_FILE, 'r', encoding='utf-8') as f: <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try: <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return json.load(f) <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;except json.JSONDecodeError: <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return []
+      </div>
+      <div class="explanation">
+       <h4>This function:</h4>
+       <ul>
+        <li>Checks if entries.json exists</li>
+        <li>Opens it safely and converts JSON text → Python list</li>
+        <li>Returns [] if file is empty or corrupted</li>
+       </ul>
+      </div>
+      <h4>Writing Entries:</h4>
+      <div class="code-block">
+       def write_entries(entries): <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;with open(DATA_FILE, 'w', encoding='utf-8') as f: <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json.dump(entries, f, indent=2)
+      </div>
+      <div class="explanation">
+       <h4>This function:</h4>
+       <ul>
+        <li>Writes the updated entries list back into the file</li>
+        <li>Uses <span class="highlight">indent=2</span> for nice formatting</li>
+       </ul>
+      </div>
+      <div class="visual-example">
+       <div class="flow-diagram">
+        <div class="flow-step">
+         Read JSON
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         Python List
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         Modify
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         Write JSON
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section" id="routes-section">
+    <div class="section-header" onclick="toggleSection('routes-section')">
+     <h3 class="section-title">🌐 API Routes</h3><span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-content">
+     <div class="content-inner">
+      <h4><span class="route-badge">GET</span>Fetch Entries Route:</h4>
+      <div class="code-block">
+       @app.route('/api/entries', methods=['GET']) <br>
+       def get_entries(): <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;entries = read_entries() <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return jsonify(entries)
+      </div>
+      <div class="explanation">
+       <h4>This route:</h4>
+       <ul>
+        <li><span class="highlight">@app.route('/api/entries')</span>: Defines a URL endpoint</li>
+        <li><span class="highlight">methods=['GET']</span>: Responds to GET requests (used to read data)</li>
+        <li>Returns the list of all entries as a JSON response</li>
+       </ul>
+      </div>
+      <h4><span class="route-badge post">POST</span>Add New Entry Route:</h4>
+      <div class="code-block">
+       @app.route('/api/entries', methods=['POST']) <br>
+       def add_entry():<br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data = request.get_json() <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name = data.get('name', 'Anonymous').strip() <br> 
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message = data.get('message', '').strip() <br> <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if not message: <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return jsonify({'error': 'Message is required'}), 400 <br> <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new_entry = {<br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'id': int(datetime.now().timestamp() * 1000), <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'name': name,<br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'message': message, <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'createdAt': datetime.now().isoformat() <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br> <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entries = read_entries() <br> 
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entries.insert(0, new_entry) <br> 
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write_entries(entries) <br> <br> 
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return jsonify(new_entry), 201
+      </div>
+      <div class="explanation">
+       <h4>Step by step:</h4>
+       <ul>
+        <li>Reads data from frontend using <span class="highlight">request.get_json()</span></li>
+        <li><span class="highlight">.get('name', 'Anonymous')</span>: If name is missing, defaults to “Anonymous.”</li>
+        <li><span class="highlight">.strip()</span>: Removes leading/trailing spaces.</li>
+        <li> Checks if message is empty — if so, returns an error <span class="highlight">HTTP 400 Bad Request</span> </li> <br>
+        <li>Creates a dictionary for the new guestbook entry.</li>
+        <li>Uses a timestamp <span class="highlight">datetime.now().timestamp() * 1000 </span> as a unique ID.</li>
+        <li>Stores time in ISO format for display later.</li><br>
+        <li>Reads the current entries.</li>
+        <li>Inserts new one at the top (so newest appears first).</li>
+        <li>Writes it back to <span class="highlight">entries.json</span></li>
+        <li>Returns the newly added entry as confirmation with status code <span class="highlight">201 Created</span>
+       </ul>
+      </div>
+      <div class="visual-example">
+       <div class="flow-diagram">
+        <div class="flow-step">
+         Frontend Form
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         POST /api/entries
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         Validate Data
+        </div>
+        <div class="flow-arrow">
+         →
+        </div>
+        <div class="flow-step">
+         Save to JSON
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section" id="serving-section">
+    <div class="section-header" onclick="toggleSection('serving-section')">
+     <h3 class="section-title">🏠 Serving the Frontend</h3><span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-content">
+     <div class="content-inner">
+      <div class="code-block">
+       @app.route('/')<br>
+       def serve_index(): <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;return send_from_directory('static', 'index.html') <br> <br>
+       @app.route('/<path:path>') <br>
+       def serve_static_file(path): <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;return send_from_directory('static', path) <br><br>
+       if __name__ == '__main__': <br>
+       &nbsp;&nbsp;&nbsp;&nbsp;app.run(debug=True, port=5000)
+       </path:path>
+      </div>
+      <div class="explanation">
+       <h4>These routes handle:</h4>
+       <ul>
+        <li>The first route serves the main HTML page <span class="highlight">index.html</span></li>
+        <li>The second route serves any other file inside <span class="highlight">/static </span>— CSS, JS, images, etc.</li>
+        <li>This makes Flask act like a mini web server for your frontend files</li><br>
+        <li><span class="highlight">debug=True</span> enables auto-reloading and helpful error messages</li>
+        <li>Server runs on <span class="highlight">port 5000</span></li>
+       </ul>
+      </div>
+      <div class="visual-example">
+       <p><strong>URL Mapping:</strong></p>
+       <div style="text-align: left; display: inline-block;">
+        🌐 localhost:5000/ → static/index.html<br>
+         🌐 localhost:5000/style.css → static/style.css<br>
+         🌐 localhost:5000/api/entries → JSON data
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            tutorial_title: "Flask Backend Tutorial",
+            step_title: "⚙️ Step 4: Build the Backend (app.py)",
+            background_color: "#667eea",
+            surface_color: "#ffffff",
+            text_color: "#2d3748",
+            primary_color: "#4f46e5",
+            accent_color: "#7c3aed",
+            font_family: "Inter",
+            font_size: 16
+        };
+
+        let expandedSections = 0;
+        const totalSections = 5;
+
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const isExpanded = section.classList.contains('expanded');
+            
+            if (isExpanded) {
+                section.classList.remove('expanded');
+                expandedSections--;
+            } else {
+                section.classList.add('expanded');
+                expandedSections++;
+            }
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progress-fill');
+            const percentage = (expandedSections / totalSections) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        async function onConfigChange(config) {
+            const tutorialTitle = config.tutorial_title || defaultConfig.tutorial_title;
+            const stepTitle = config.step_title || defaultConfig.step_title;
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const surfaceColor = config.surface_color || defaultConfig.surface_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const accentColor = config.accent_color || defaultConfig.accent_color;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            const fontSize = config.font_size || defaultConfig.font_size;
+
+            document.getElementById('tutorial-title').textContent = tutorialTitle;
+            document.getElementById('step-title').textContent = stepTitle;
+
+            document.body.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${accentColor} 100%)`;
+            document.body.style.color = textColor;
+            document.body.style.fontFamily = `${fontFamily}, -apple-system, BlinkMacSystemFont, sans-serif`;
+            document.body.style.fontSize = `${fontSize}px`;
+
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.background = surfaceColor;
+            });
+
+            const sectionHeaders = document.querySelectorAll('.section-header');
+            sectionHeaders.forEach(header => {
+                header.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${accentColor} 100%)`;
+            });
+
+            const highlights = document.querySelectorAll('.highlight');
+            highlights.forEach(highlight => {
+                highlight.style.color = primaryColor;
+            });
+
+            const flowSteps = document.querySelectorAll('.flow-step');
+            flowSteps.forEach(step => {
+                step.style.background = primaryColor;
+            });
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [
+                        {
+                            get: () => config.background_color || defaultConfig.background_color,
+                            set: (value) => {
+                                config.background_color = value;
+                                window.elementSdk.setConfig({ background_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.surface_color || defaultConfig.surface_color,
+                            set: (value) => {
+                                config.surface_color = value;
+                                window.elementSdk.setConfig({ surface_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.text_color || defaultConfig.text_color,
+                            set: (value) => {
+                                config.text_color = value;
+                                window.elementSdk.setConfig({ text_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.primary_color || defaultConfig.primary_color,
+                            set: (value) => {
+                                config.primary_color = value;
+                                window.elementSdk.setConfig({ primary_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.accent_color || defaultConfig.accent_color,
+                            set: (value) => {
+                                config.accent_color = value;
+                                window.elementSdk.setConfig({ accent_color: value });
+                            }
+                        }
+                    ],
+                    borderables: [],
+                    fontEditable: {
+                        get: () => config.font_family || defaultConfig.font_family,
+                        set: (value) => {
+                            config.font_family = value;
+                            window.elementSdk.setConfig({ font_family: value });
+                        }
+                    },
+                    fontSizeable: {
+                        get: () => config.font_size || defaultConfig.font_size,
+                        set: (value) => {
+                            config.font_size = value;
+                            window.elementSdk.setConfig({ font_size: value });
+                        }
+                    }
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["tutorial_title", config.tutorial_title || defaultConfig.tutorial_title],
+                    ["step_title", config.step_title || defaultConfig.step_title]
+                ])
+            });
+        }
+
+        // Initialize with default config
+        onConfigChange(defaultConfig);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998c35257401b0e0',t:'MTc2MjE3NjQzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
